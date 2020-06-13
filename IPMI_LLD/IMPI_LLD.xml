@@ -1,0 +1,1424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2020-06-13T15:14:27Z</date>
+    <groups>
+        <group>
+            <name>Templates/Server hardware</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>IPMI LLD</template>
+            <name>IPMI LLD</name>
+            <groups>
+                <group>
+                    <name>Templates/Server hardware</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Chassis</name>
+                </application>
+                <application>
+                    <name>CPU</name>
+                </application>
+                <application>
+                    <name>Disks</name>
+                </application>
+                <application>
+                    <name>Fans</name>
+                </application>
+                <application>
+                    <name>IPMI_LLD</name>
+                </application>
+                <application>
+                    <name>Power</name>
+                </application>
+                <application>
+                    <name>Temperature</name>
+                </application>
+                <application>
+                    <name>Voltage</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>IPMI Discovery</name>
+                    <type>IPMI</type>
+                    <key>ipmi.get</key>
+                    <delay>5m</delay>
+                    <history>2h</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <applications>
+                        <application>
+                            <name>IPMI_LLD</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>Cable Connection IPMI Discovery Rule</name>
+                    <type>DEPENDENT</type>
+                    <key>ipmi.sensor.discovery.cable</key>
+                    <delay>0</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#READING_TYPE}</macro>
+                                <value>^111$</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#SENSOR_TYPE}</macro>
+                                <value>^27$</value>
+                                <formulaid>B</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <description>Cable Interconnects.</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Cable Interconnect Sensor {#SENSOR_ID}</name>
+                            <type>DEPENDENT</type>
+                            <key>ipmi.sensor.cable[{#SENSOR_ID}]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <description>Cable Interconnect {#SENSOR_ID}&#13;
+Name: {#SENSOR_NAME}&#13;
+Type: {#SENSOR_TYPE_STR}</description>
+                            <applications>
+                                <application>
+                                    <name>Chassis</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.id=='{#SENSOR_ID}')].state.state.first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipmi.get</key>
+                            </master_item>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>ipmi.get</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#READING_TYPE}</lld_macro>
+                            <path>$.reading.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_ID}</lld_macro>
+                            <path>$.id</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE_STR}</lld_macro>
+                            <path>$.sensor.text</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE}</lld_macro>
+                            <path>$.sensor.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_UNIT}</lld_macro>
+                            <path>$.units</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_AVG}</lld_macro>
+                            <path>$.threshold.upper.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_CRIT}</lld_macro>
+                            <path>$.threshold.upper.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_WARN}</lld_macro>
+                            <path>$.threshold.upper.non_crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_AVG}</lld_macro>
+                            <path>$.threshold.lower.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_CRIT}</lld_macro>
+                            <path>$.threshold.lower.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_WARN}</lld_macro>
+                            <path>$.threshold.lower.non_crit</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Chassis Intrusion IPMI Discovery Rule</name>
+                    <type>DEPENDENT</type>
+                    <key>ipmi.sensor.discovery.chassis_intru</key>
+                    <delay>0</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SENSOR_TYPE}</macro>
+                                <value>^5$</value>
+                                <formulaid>B</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#READING_TYPE}</macro>
+                                <value>^111$</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Chassis Intrusion {#SENSOR_ID}</name>
+                            <type>DEPENDENT</type>
+                            <key>ipmi.sensor.chassis_intru[{#SENSOR_ID}]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <applications>
+                                <application>
+                                    <name>Chassis</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.id=='{#SENSOR_ID}')].state.state.first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipmi.get</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;0</expression>
+                                    <name>Chassis Intrusion detected on {#SENSOR_NAME}</name>
+                                    <status>DISABLED</status>
+                                    <priority>WARNING</priority>
+                                    <description>Chassis intrusion detected on {#SENSOR_NAME}.  Value is {ITEM.VALUE}</description>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>ipmi.get</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#READING_TYPE}</lld_macro>
+                            <path>$.reading.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_ID}</lld_macro>
+                            <path>$.id</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE_STR}</lld_macro>
+                            <path>$.sensor.text</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE}</lld_macro>
+                            <path>$.sensor.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_UNIT}</lld_macro>
+                            <path>$.units</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_AVG}</lld_macro>
+                            <path>$.threshold.upper.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_CRIT}</lld_macro>
+                            <path>$.threshold.upper.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_WARN}</lld_macro>
+                            <path>$.threshold.upper.non_crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_AVG}</lld_macro>
+                            <path>$.threshold.lower.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_CRIT}</lld_macro>
+                            <path>$.threshold.lower.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_WARN}</lld_macro>
+                            <path>$.threshold.lower.non_crit</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Power Usage IPMI Discovery Rule</name>
+                    <type>DEPENDENT</type>
+                    <key>ipmi.sensor.discovery.current</key>
+                    <delay>0</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#READING_TYPE}</macro>
+                                <value>^1$</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#SENSOR_TYPE}</macro>
+                                <value>^3$</value>
+                                <formulaid>B</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <description>Power Usage Sensors (type 3) with threshold</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Current {#SENSOR_ID}</name>
+                            <type>DEPENDENT</type>
+                            <key>ipmi.sensor.current[{#SENSOR_ID}]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>{#SENSOR_UNIT}</units>
+                            <description>Temperature Sensor ID: {#SENSOR_ID}&#13;
+Name: {#SENSOR_NAME}&#13;
+Type: {#SENSOR_TYPE_STR}&#13;
+Thresholds:&#13;
+  High:    {#THRESH_HIGH_WARN} , {#THRESH_HIGH_AVG} , {#THRESH_HIGH_CRIT}&#13;
+  Low:    {#THRESH_LOW_WARN} , {#THRESH_LOW_AVG} , {#THRESH_LOW_CRIT}</description>
+                            <applications>
+                                <application>
+                                    <name>Power</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.id=='{#SENSOR_ID}')].value.first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipmi.get</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{#THRESH_HIGH_AVG}</expression>
+                                    <name>Power Usage {#SENSOR_ID} critically high</name>
+                                    <priority>AVERAGE</priority>
+                                    <description>Current sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &gt; {#THRESH_HIGH_AVG}</description>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{#THRESH_HIGH_WARN}</expression>
+                                    <name>Power Usage {#SENSOR_ID} high</name>
+                                    <priority>WARNING</priority>
+                                    <description>Current sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &gt; {#THRESH_HIGH_WARN}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Power Usage {#SENSOR_ID} critically high</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.current[{#SENSOR_ID}].last()}&gt;{#THRESH_HIGH_AVG}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>ipmi.get</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#READING_TYPE}</lld_macro>
+                            <path>$.reading.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_ID}</lld_macro>
+                            <path>$.id</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE_STR}</lld_macro>
+                            <path>$.sensor.text</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE}</lld_macro>
+                            <path>$.sensor.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_UNIT}</lld_macro>
+                            <path>$.units</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_AVG}</lld_macro>
+                            <path>$.threshold.upper.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_CRIT}</lld_macro>
+                            <path>$.threshold.upper.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_WARN}</lld_macro>
+                            <path>$.threshold.upper.non_crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_AVG}</lld_macro>
+                            <path>$.threshold.lower.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_CRIT}</lld_macro>
+                            <path>$.threshold.lower.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_WARN}</lld_macro>
+                            <path>$.threshold.lower.non_crit</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Drive Presence IPMI Discovery Rule</name>
+                    <type>DEPENDENT</type>
+                    <key>ipmi.sensor.discovery.drive_presence</key>
+                    <delay>0</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SENSOR_TYPE}</macro>
+                                <value>^13$</value>
+                                <formulaid>B</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#READING_TYPE}</macro>
+                                <value>^111$</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <description>Drive Presence</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Drive Presence {#SENSOR_ID}</name>
+                            <type>DEPENDENT</type>
+                            <key>ipmi.sensor.drive_presence[{#SENSOR_ID}]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <description>Drive Presence {#SENSOR_ID}&#13;
+Name: {#SENSOR_NAME}&#13;
+Type: {#SENSOR_TYPE_STR}</description>
+                            <applications>
+                                <application>
+                                    <name>Disks</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.id=='{#SENSOR_ID}')].state.state.first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipmi.get</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{diff()}=1</expression>
+                                    <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                                    <recovery_expression>{delta(24h)}=0</recovery_expression>
+                                    <name>Drive {#SENSOR_ID} Changed state</name>
+                                    <priority>WARNING</priority>
+                                    <description>Drive Presense has changed.  Will auto-close in 24 hrs.</description>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>ipmi.get</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#READING_TYPE}</lld_macro>
+                            <path>$.reading.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_ID}</lld_macro>
+                            <path>$.id</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE_STR}</lld_macro>
+                            <path>$.sensor.text</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE}</lld_macro>
+                            <path>$.sensor.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_UNIT}</lld_macro>
+                            <path>$.units</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_AVG}</lld_macro>
+                            <path>$.threshold.upper.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_CRIT}</lld_macro>
+                            <path>$.threshold.upper.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_WARN}</lld_macro>
+                            <path>$.threshold.upper.non_crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_AVG}</lld_macro>
+                            <path>$.threshold.lower.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_CRIT}</lld_macro>
+                            <path>$.threshold.lower.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_WARN}</lld_macro>
+                            <path>$.threshold.lower.non_crit</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Fan IPMI Discovery Rule</name>
+                    <type>DEPENDENT</type>
+                    <key>ipmi.sensor.discovery.fan</key>
+                    <delay>0</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SENSOR_TYPE}</macro>
+                                <value>^4$</value>
+                                <formulaid>C</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#READING_TYPE}</macro>
+                                <value>^1$</value>
+                                <formulaid>B</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#CUR_VALUE}</macro>
+                                <value>^-[0-9]*</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <description>Fan Sensors (type 4) with threshold</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Fan {#SENSOR_ID}</name>
+                            <type>DEPENDENT</type>
+                            <key>ipmi.sensor.fan[{#SENSOR_ID}]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <units>{#SENSOR_UNIT}</units>
+                            <description>Fan Sensor ID: {#SENSOR_ID}&#13;
+Name: {#SENSOR_NAME}&#13;
+Type: {#SENSOR_TYPE_STR}&#13;
+Thresholds:&#13;
+  High:    {#THRESH_HIGH_WARN} , {#THRESH_HIGH_AVG} , {#THRESH_HIGH_CRIT}&#13;
+  Low:    {#THRESH_LOW_WARN} , {#THRESH_LOW_AVG} , {#THRESH_LOW_CRIT}&#13;
+Cur: {#CUR_VALUE}</description>
+                            <applications>
+                                <application>
+                                    <name>Fans</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.id=='{#SENSOR_ID}')].value.first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipmi.get</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{#THRESH_HIGH_AVG}</expression>
+                                    <name>Fan Sensor {#SENSOR_ID} is critically high</name>
+                                    <priority>AVERAGE</priority>
+                                    <description>Fan sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &gt; {#THRESH_HIGH_AVG}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Fan Sensor {#SENSOR_ID} is unrecoverably high</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.fan[{#SENSOR_ID}].last()}&gt;{#THRESH_HIGH_CRIT}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;{#THRESH_LOW_AVG}</expression>
+                                    <name>Fan Sensor {#SENSOR_ID} is critically low</name>
+                                    <priority>AVERAGE</priority>
+                                    <description>Fan sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &lt; {#THRESH_LOW_AVG}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Fan Sensor {#SENSOR_ID} is unrecoverably low</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.fan[{#SENSOR_ID}].last()}&lt;{#THRESH_LOW_CRIT}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{#THRESH_HIGH_WARN}</expression>
+                                    <name>Fan Sensor {#SENSOR_ID} is high</name>
+                                    <priority>WARNING</priority>
+                                    <description>Fan sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &gt; {#THRESH_HIGH_WARN}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Fan Sensor {#SENSOR_ID} is unrecoverably high</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.fan[{#SENSOR_ID}].last()}&gt;{#THRESH_HIGH_CRIT}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;{#THRESH_LOW_WARN}</expression>
+                                    <name>Fan Sensor {#SENSOR_ID} is low</name>
+                                    <priority>WARNING</priority>
+                                    <description>Fan sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &lt; {#THRESH_LOW_WARN}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Fan Sensor {#SENSOR_ID} is critically low</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.fan[{#SENSOR_ID}].last()}&lt;{#THRESH_LOW_AVG}</expression>
+                                        </dependency>
+                                        <dependency>
+                                            <name>Fan Sensor {#SENSOR_ID} is unrecoverably low</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.fan[{#SENSOR_ID}].last()}&lt;{#THRESH_LOW_CRIT}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{#THRESH_HIGH_CRIT}</expression>
+                                    <name>Fan Sensor {#SENSOR_ID} is unrecoverably high</name>
+                                    <priority>HIGH</priority>
+                                    <description>Fan sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &gt; {#THRESH_HIGH_CRIT}</description>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;{#THRESH_LOW_CRIT}</expression>
+                                    <name>Fan Sensor {#SENSOR_ID} is unrecoverably low</name>
+                                    <priority>HIGH</priority>
+                                    <description>Fan sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &lt; {#THRESH_LOW_CRIT}</description>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>ipmi.get</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#READING_TYPE}</lld_macro>
+                            <path>$.reading.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_ID}</lld_macro>
+                            <path>$.id</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE_STR}</lld_macro>
+                            <path>$.sensor.text</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE}</lld_macro>
+                            <path>$.sensor.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_UNIT}</lld_macro>
+                            <path>$.units</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_AVG}</lld_macro>
+                            <path>$.threshold.upper.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_CRIT}</lld_macro>
+                            <path>$.threshold.upper.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_WARN}</lld_macro>
+                            <path>$.threshold.upper.non_crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_AVG}</lld_macro>
+                            <path>$.threshold.lower.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_CRIT}</lld_macro>
+                            <path>$.threshold.lower.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_WARN}</lld_macro>
+                            <path>$.threshold.lower.non_crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#CUR_VALUE}</lld_macro>
+                            <path>$.value</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Power Supply Status IPMI Discovery Rule</name>
+                    <type>DEPENDENT</type>
+                    <key>ipmi.sensor.discovery.ps_status</key>
+                    <delay>0</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SENSOR_TYPE}</macro>
+                                <value>^8$</value>
+                                <formulaid>B</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#READING_TYPE}</macro>
+                                <value>^111$</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>{#SENSOR_ID}</name>
+                            <type>DEPENDENT</type>
+                            <key>ipmi.sensor.ps_status[{#SENSOR_ID}]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <description>0/1&#13;
+rt:{#READING_TYPE}&#13;
+id:{#SENSOR_ID}&#13;
+name:{#SENSOR_NAME}&#13;
+typestr:{#SENSOR_TYPE_STR}&#13;
+type:{#SENSOR_TYPE}&#13;
+unit:{#SENSOR_UNIT}</description>
+                            <applications>
+                                <application>
+                                    <name>Power</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.id=='{#SENSOR_ID}')].state.state.first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipmi.get</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>({last()}-{$PS_STATUS_OFFSET})&lt;&gt;1</expression>
+                                    <name>Power Supply {#SENSOR_ID} in abnormal state</name>
+                                    <priority>WARNING</priority>
+                                    <description>Power supply {#SENSOR_ID} at locator {#SENSOR_NAME} is not in state 1 (presence detected).  State is {ITEM.VALUE}.</description>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>ipmi.get</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#READING_TYPE}</lld_macro>
+                            <path>$.reading.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_ID}</lld_macro>
+                            <path>$.id</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE_STR}</lld_macro>
+                            <path>$.sensor.text</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE}</lld_macro>
+                            <path>$.sensor.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_UNIT}</lld_macro>
+                            <path>$.units</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_AVG}</lld_macro>
+                            <path>$.threshold.upper.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_CRIT}</lld_macro>
+                            <path>$.threshold.upper.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_WARN}</lld_macro>
+                            <path>$.threshold.upper.non_crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_AVG}</lld_macro>
+                            <path>$.threshold.lower.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_CRIT}</lld_macro>
+                            <path>$.threshold.lower.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_WARN}</lld_macro>
+                            <path>$.threshold.lower.non_crit</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>SM Cpu Temp IPMI Discovery Rule</name>
+                    <type>DEPENDENT</type>
+                    <key>ipmi.sensor.discovery.sm_cpu_temp</key>
+                    <delay>0</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SENSOR_TYPE}</macro>
+                                <value>^192$</value>
+                                <formulaid>B</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#READING_TYPE}</macro>
+                                <value>^112$</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <description>SuperMicro CPU Temp (low/medium/high/crit)</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>{#SENSOR_ID}</name>
+                            <type>DEPENDENT</type>
+                            <key>ipmi.sensor.sm_cpu_temp[{#SENSOR_ID}]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <description>SuperMicro CPU temperature sensor.&#13;
+Low: T &lt; CPU overheat temperature -10&#13;
+Medium: CPU overheat temperature -10 &lt; T &lt; CPU overheat temperature&#13;
+High: T &gt; CPU overheat temperature&#13;
+&#13;
+T: Temperature of CPU in degrees centigrade&#13;
+&#13;
+CPU Overheat temperature varies from 60’C ~ 90’C depending on the model. E.g. CPU overheat temperature is 67’C for Xeon E5450.&#13;
+http://processorfinder.intel.com/details.aspx?sSpec=SLANQ</description>
+                            <applications>
+                                <application>
+                                    <name>CPU</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>SuperMicro CPU Temp</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.id=='{#SENSOR_ID}')].state.state.first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipmi.get</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}=2</expression>
+                                    <name>{#SENSOR_ID} High</name>
+                                    <priority>AVERAGE</priority>
+                                    <description>CPU Temperature is high.</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>{#SENSOR_ID} Overheat</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.sm_cpu_temp[{#SENSOR_ID}].last()}&gt;=4</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;=4</expression>
+                                    <name>{#SENSOR_ID} Overheat</name>
+                                    <priority>HIGH</priority>
+                                    <description>CPU Temperature is critically high.</description>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>ipmi.get</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#READING_TYPE}</lld_macro>
+                            <path>$.reading.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_ID}</lld_macro>
+                            <path>$.id</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE_STR}</lld_macro>
+                            <path>$.sensor.text</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE}</lld_macro>
+                            <path>$.sensor.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_UNIT}</lld_macro>
+                            <path>$.units</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_AVG}</lld_macro>
+                            <path>$.threshold.upper.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_CRIT}</lld_macro>
+                            <path>$.threshold.upper.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_WARN}</lld_macro>
+                            <path>$.threshold.upper.non_crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_AVG}</lld_macro>
+                            <path>$.threshold.lower.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_CRIT}</lld_macro>
+                            <path>$.threshold.lower.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_WARN}</lld_macro>
+                            <path>$.threshold.lower.non_crit</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Temperature IPMI Discovery Rule</name>
+                    <type>DEPENDENT</type>
+                    <key>ipmi.sensor.discovery.temperature</key>
+                    <delay>0</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SENSOR_TYPE}</macro>
+                                <value>^1$</value>
+                                <formulaid>B</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#READING_TYPE}</macro>
+                                <value>^1$</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <description>Temperature Sensors (type 1) with threshold</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Temperature {#SENSOR_ID}</name>
+                            <type>DEPENDENT</type>
+                            <key>ipmi.sensor.temperature[{#SENSOR_ID}]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>{#SENSOR_UNIT}</units>
+                            <description>Temperature Sensor ID: {#SENSOR_ID}&#13;
+Name: {#SENSOR_NAME}&#13;
+Type: {#SENSOR_TYPE_STR}&#13;
+Thresholds:&#13;
+  High:    {#THRESH_HIGH_WARN} , {#THRESH_HIGH_AVG} , {#THRESH_HIGH_CRIT}&#13;
+  Low:    {#THRESH_LOW_WARN} , {#THRESH_LOW_AVG} , {#THRESH_LOW_CRIT}</description>
+                            <applications>
+                                <application>
+                                    <name>Temperature</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.id=='{#SENSOR_ID}')].value.first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipmi.get</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{#THRESH_HIGH_AVG}</expression>
+                                    <name>Temperature Sensor {#SENSOR_ID} is critically high</name>
+                                    <priority>AVERAGE</priority>
+                                    <description>Temperature sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &gt; {#THRESH_HIGH_AVG}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Temperature Sensor {#SENSOR_ID} is unrecoverably high</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.temperature[{#SENSOR_ID}].last()}&gt;{#THRESH_HIGH_CRIT}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;{#THRESH_LOW_AVG}</expression>
+                                    <name>Temperature Sensor {#SENSOR_ID} is critically low</name>
+                                    <priority>AVERAGE</priority>
+                                    <description>Temperature sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &lt; {#THRESH_LOW_AVG}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Temperature Sensor {#SENSOR_ID} is unrecoverably low</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.temperature[{#SENSOR_ID}].last()}&lt;{#THRESH_LOW_CRIT}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{#THRESH_HIGH_WARN}</expression>
+                                    <name>Temperature Sensor {#SENSOR_ID} is high</name>
+                                    <priority>WARNING</priority>
+                                    <description>Temperature sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &gt; {#THRESH_HIGH_WARN}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Temperature Sensor {#SENSOR_ID} is critically high</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.temperature[{#SENSOR_ID}].last()}&gt;{#THRESH_HIGH_AVG}</expression>
+                                        </dependency>
+                                        <dependency>
+                                            <name>Temperature Sensor {#SENSOR_ID} is unrecoverably high</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.temperature[{#SENSOR_ID}].last()}&gt;{#THRESH_HIGH_CRIT}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;{#THRESH_LOW_WARN}</expression>
+                                    <name>Temperature Sensor {#SENSOR_ID} is low</name>
+                                    <priority>WARNING</priority>
+                                    <description>Temperature sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &lt; {#THRESH_LOW_WARN}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Temperature Sensor {#SENSOR_ID} is critically low</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.temperature[{#SENSOR_ID}].last()}&lt;{#THRESH_LOW_AVG}</expression>
+                                        </dependency>
+                                        <dependency>
+                                            <name>Temperature Sensor {#SENSOR_ID} is unrecoverably low</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.temperature[{#SENSOR_ID}].last()}&lt;{#THRESH_LOW_CRIT}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{#THRESH_HIGH_CRIT}</expression>
+                                    <name>Temperature Sensor {#SENSOR_ID} is unrecoverably high</name>
+                                    <priority>HIGH</priority>
+                                    <description>Temperature sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &gt; {#THRESH_HIGH_CRIT}</description>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;{#THRESH_LOW_CRIT}</expression>
+                                    <name>Temperature Sensor {#SENSOR_ID} is unrecoverably low</name>
+                                    <priority>HIGH</priority>
+                                    <description>Temperature sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR}) current reading {ITEM.VALUE} &lt; {#THRESH_LOW_CRIT}</description>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>ipmi.get</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#READING_TYPE}</lld_macro>
+                            <path>$.reading.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_ID}</lld_macro>
+                            <path>$.id</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE_STR}</lld_macro>
+                            <path>$.sensor.text</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE}</lld_macro>
+                            <path>$.sensor.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_UNIT}</lld_macro>
+                            <path>$.units</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_AVG}</lld_macro>
+                            <path>$.threshold.upper.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_CRIT}</lld_macro>
+                            <path>$.threshold.upper.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_WARN}</lld_macro>
+                            <path>$.threshold.upper.non_crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_AVG}</lld_macro>
+                            <path>$.threshold.lower.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_CRIT}</lld_macro>
+                            <path>$.threshold.lower.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_WARN}</lld_macro>
+                            <path>$.threshold.lower.non_crit</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Voltage IPMI Discovery Rule</name>
+                    <type>DEPENDENT</type>
+                    <key>ipmi.sensor.discovery.voltage</key>
+                    <delay>0</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SENSOR_TYPE}</macro>
+                                <value>^2$</value>
+                                <formulaid>B</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#READING_TYPE}</macro>
+                                <value>^1$</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <description>Voltage Sensors (type 2)</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Voltage Sensor {#SENSOR_ID}</name>
+                            <type>DEPENDENT</type>
+                            <key>ipmi.sensor.voltage[{#SENSOR_ID}]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>{#SENSOR_UNIT}</units>
+                            <description>Voltage Sensor ID: {#SENSOR_ID}&#13;
+Name: {#SENSOR_NAME}&#13;
+Type: {#SENSOR_TYPE_STR}&#13;
+Thresholds:&#13;
+  High:    {#THRESH_HIGH_WARN} , {#THRESH_HIGH_AVG} , {#THRESH_HIGH_CRIT}&#13;
+  Low:    {#THRESH_LOW_WARN} , {#THRESH_LOW_AVG} , {#THRESH_LOW_CRIT}</description>
+                            <applications>
+                                <application>
+                                    <name>Voltage</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.id=='{#SENSOR_ID}')].value.first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipmi.get</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{#THRESH_HIGH_AVG}</expression>
+                                    <name>Voltage Sensor {#SENSOR_ID} is critically high</name>
+                                    <priority>AVERAGE</priority>
+                                    <description>Voltage sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR} current reading {ITEM.VALUE} &gt; {#THRESH_HIGH_AVG}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Voltage Sensor {#SENSOR_ID} is unrecoverably high</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.voltage[{#SENSOR_ID}].last()}&gt;{#THRESH_HIGH_CRIT}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;{#THRESH_LOW_AVG}</expression>
+                                    <name>Voltage Sensor {#SENSOR_ID} is critically low</name>
+                                    <priority>AVERAGE</priority>
+                                    <description>Voltage sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR} current reading {ITEM.VALUE} &lt; {#THRESH_LOW_AVG}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Voltage Sensor {#SENSOR_ID} is unrecoverably low</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.voltage[{#SENSOR_ID}].last()}&lt;{#THRESH_LOW_CRIT}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{#THRESH_HIGH_WARN}</expression>
+                                    <name>Voltage Sensor {#SENSOR_ID} is high</name>
+                                    <priority>AVERAGE</priority>
+                                    <description>Voltage sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR} current reading {ITEM.VALUE} &gt; {#THRESH_HIGH_WARN}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Voltage Sensor {#SENSOR_ID} is critically high</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.voltage[{#SENSOR_ID}].last()}&gt;{#THRESH_HIGH_AVG}</expression>
+                                        </dependency>
+                                        <dependency>
+                                            <name>Voltage Sensor {#SENSOR_ID} is unrecoverably high</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.voltage[{#SENSOR_ID}].last()}&gt;{#THRESH_HIGH_CRIT}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;{#THRESH_LOW_WARN}</expression>
+                                    <name>Voltage Sensor {#SENSOR_ID} is low</name>
+                                    <priority>WARNING</priority>
+                                    <description>Voltage sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR} current reading {ITEM.VALUE} &lt; {#THRESH_LOW_WARN}</description>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>Voltage Sensor {#SENSOR_ID} is critically low</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.voltage[{#SENSOR_ID}].last()}&lt;{#THRESH_LOW_AVG}</expression>
+                                        </dependency>
+                                        <dependency>
+                                            <name>Voltage Sensor {#SENSOR_ID} is unrecoverably low</name>
+                                            <expression>{IPMI LLD:ipmi.sensor.voltage[{#SENSOR_ID}].last()}&lt;{#THRESH_LOW_CRIT}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&gt;{#THRESH_HIGH_CRIT}</expression>
+                                    <name>Voltage Sensor {#SENSOR_ID} is unrecoverably high</name>
+                                    <priority>HIGH</priority>
+                                    <description>Voltage sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR} current reading {ITEM.VALUE} &gt; {#THRESH_HIGH_CRIT}</description>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;{#THRESH_LOW_CRIT}</expression>
+                                    <name>Voltage Sensor {#SENSOR_ID} is unrecoverably low</name>
+                                    <priority>HIGH</priority>
+                                    <description>Voltage sensor {#SENSOR_ID} ({#SENSOR_NAME} type {#SENSOR_TYPE_STR} current reading {ITEM.VALUE} &lt; {#THRESH_LOW_CRIT}</description>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>ipmi.get</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#READING_TYPE}</lld_macro>
+                            <path>$.reading.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_ID}</lld_macro>
+                            <path>$.id</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE_STR}</lld_macro>
+                            <path>$.sensor.text</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE}</lld_macro>
+                            <path>$.sensor.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_UNIT}</lld_macro>
+                            <path>$.units</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_AVG}</lld_macro>
+                            <path>$.threshold.upper.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_CRIT}</lld_macro>
+                            <path>$.threshold.upper.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_WARN}</lld_macro>
+                            <path>$.threshold.upper.non_crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_AVG}</lld_macro>
+                            <path>$.threshold.lower.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_CRIT}</lld_macro>
+                            <path>$.threshold.lower.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_WARN}</lld_macro>
+                            <path>$.threshold.lower.non_crit</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Voltage State IPMI Discovery Rule</name>
+                    <type>DEPENDENT</type>
+                    <key>ipmi.sensor.discovery.voltage_state</key>
+                    <delay>0</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SENSOR_TYPE}</macro>
+                                <value>^2$</value>
+                                <formulaid>B</formulaid>
+                            </condition>
+                            <condition>
+                                <macro>{#READING_TYPE}</macro>
+                                <value>^3$</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <description>Voltage states that are either in out of of error condition.</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Voltage State {#SENSOR_ID}</name>
+                            <type>DEPENDENT</type>
+                            <key>ipmi.sensor.voltage_state[{#SENSOR_ID}]</key>
+                            <delay>0</delay>
+                            <history>7d</history>
+                            <description>Voltage discrete state {#SENSOR_ID}&#13;
+Name: {#SENSOR_NAME}&#13;
+Type: {#SENSOR_TYPE_STR}</description>
+                            <applications>
+                                <application>
+                                    <name>Voltage</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <params>$.[?(@.id=='{#SENSOR_ID}')].state.state.first()</params>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>ipmi.get</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last()}&lt;&gt;1</expression>
+                                    <name>Voltage State {#SENSOR_ID} in error state</name>
+                                    <priority>WARNING</priority>
+                                    <description>Voltage sensor {#SENSOR_ID} @ {#SENSOR_NAME} is in state {ITEM.VALUE}</description>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>ipmi.get</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#READING_TYPE}</lld_macro>
+                            <path>$.reading.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_ID}</lld_macro>
+                            <path>$.id</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_NAME}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE_STR}</lld_macro>
+                            <path>$.sensor.text</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_TYPE}</lld_macro>
+                            <path>$.sensor.type</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#SENSOR_UNIT}</lld_macro>
+                            <path>$.units</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_AVG}</lld_macro>
+                            <path>$.threshold.upper.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_CRIT}</lld_macro>
+                            <path>$.threshold.upper.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_HIGH_WARN}</lld_macro>
+                            <path>$.threshold.upper.non_crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_AVG}</lld_macro>
+                            <path>$.threshold.lower.crit</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_CRIT}</lld_macro>
+                            <path>$.threshold.lower.non_recover</path>
+                        </lld_macro_path>
+                        <lld_macro_path>
+                            <lld_macro>{#THRESH_LOW_WARN}</lld_macro>
+                            <path>$.threshold.lower.non_crit</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$PS_STATUS_OFFSET}</macro>
+                    <value>0</value>
+                    <description>Some PS Status devices have an off-by-one config, set to -1 if you get a failure detect when state is 1</description>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+    <value_maps>
+        <value_map>
+            <name>SuperMicro CPU Temp</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>Low</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>Medium</newvalue>
+                </mapping>
+                <mapping>
+                    <value>2</value>
+                    <newvalue>High</newvalue>
+                </mapping>
+                <mapping>
+                    <value>4</value>
+                    <newvalue>OverHeat</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+    </value_maps>
+</zabbix_export>
