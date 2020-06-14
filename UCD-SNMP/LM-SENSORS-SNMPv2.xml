@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2020-06-14T14:07:15Z</date>
+    <groups>
+        <group>
+            <name>Templates/Server hardware</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template SNMPv2 LM-SENSORS</template>
+            <name>Template SNMPv2 LM-SENSORS</name>
+            <description>Template for LM-SENSORS mib, specifically from FreeNAS, but probably works for any net-snmp based machine.</description>
+            <groups>
+                <group>
+                    <name>Templates/Server hardware</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>CPU</name>
+                </application>
+                <application>
+                    <name>Temperature</name>
+                </application>
+            </applications>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>Temperature Discovery</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SENSOR_NAME}, 1.3.6.1.4.1.2021.13.16.2.1.2]</snmp_oid>
+                    <key>lmsensor.temp.discovery</key>
+                    <delay>8h</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SENSOR_NAME}</macro>
+                                <value>^CPU</value>
+                                <operator>NOT_MATCHES_REGEX</operator>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <description>Discover non-CPU temperature entities in LM Sensors</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Temperature Sensor {#SENSOR_NAME}</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.2021.13.16.2.1.3.{#SNMPINDEX}</snmp_oid>
+                            <key>lmsensors.temp[{#SENSOR_NAME}]</key>
+                            <delay>5m</delay>
+                            <history>7d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>C</units>
+                            <applications>
+                                <application>
+                                    <name>Temperature</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <params>0.001</params>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>CPU Temperature Discovery</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#SENSOR_NAME}, 1.3.6.1.4.1.2021.13.16.2.1.2]</snmp_oid>
+                    <key>lmsensors.cpu.disovery</key>
+                    <delay>8h</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#SENSOR_NAME}</macro>
+                                <value>^CPU</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <description>Discover CPU temperature entities in LM Sensors</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>CPU Temperature {#SENSOR_NAME}</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>1.3.6.1.4.1.2021.13.16.2.1.3.{#SNMPINDEX}</snmp_oid>
+                            <key>lmsensors.cpu[{#SENSOR_NAME}]</key>
+                            <delay>5m</delay>
+                            <history>7d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>C</units>
+                            <applications>
+                                <application>
+                                    <name>CPU</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <params>0.001</params>
+                                </step>
+                            </preprocessing>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last(3)}&gt;{$CPU_HIGH}</expression>
+                                    <name>CPU {#SENSOR_NAME} high temp</name>
+                                    <priority>WARNING</priority>
+                                    <description>CPU temperature is higher than {$CPU_HIGH} currently {ITEM.VALUE}</description>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$CPU_HIGH}</macro>
+                    <value>60.0</value>
+                    <description>High cpu temp for alert</description>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>
