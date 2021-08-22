@@ -1,0 +1,738 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2021-08-22T15:16:31Z</date>
+    <groups>
+        <group>
+            <name>Avocent</name>
+        </group>
+        <group>
+            <name>PDU</name>
+        </group>
+        <group>
+            <name>Templates/Server hardware</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Cyclades ACS</template>
+            <name>Cyclades ACS</name>
+            <description>Template for an Avocent/Cyclades ACS. Note, not an ACS6000 or 5k, earlier version such as ACS16 or ACS8..</description>
+            <templates>
+                <template>
+                    <name>Cyclades ACS ConfSys SNMPv2</name>
+                </template>
+                <template>
+                    <name>Cyclades ACS INFO SNMPv2</name>
+                </template>
+                <template>
+                    <name>Cyclades ACS PM Unit SNMPv2</name>
+                </template>
+                <template>
+                    <name>Template Module Generic SNMPv2</name>
+                </template>
+                <template>
+                    <name>Template Module Interfaces Simple SNMPv2</name>
+                </template>
+                <template>
+                    <name>Template SNMPv2 UCD-SNMP-MIB</name>
+                </template>
+            </templates>
+            <groups>
+                <group>
+                    <name>Avocent</name>
+                </group>
+                <group>
+                    <name>PDU</name>
+                </group>
+                <group>
+                    <name>Templates/Server hardware</name>
+                </group>
+            </groups>
+        </template>
+        <template>
+            <template>Cyclades ACS ConfSys SNMPv2</template>
+            <name>Cyclades ACS ConfSys SNMPv2</name>
+            <description>CYCLADES-ACS-CONF-MIB&#13;
+CYCLADES-ACS-SYS-MIB</description>
+            <groups>
+                <group>
+                    <name>Avocent</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>General</name>
+                </application>
+                <application>
+                    <name>System</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>CPU Freq</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.2925.4.1.7.0</snmp_oid>
+                    <key>cyACSCPUfreq</key>
+                    <delay>1h</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <units>MHz</units>
+                    <description>CPU clock in MHz</description>
+                    <applications>
+                        <application>
+                            <name>System</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Device ID</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.2925.4.1.8.0</snmp_oid>
+                    <key>cyACSDevId</key>
+                    <delay>1h</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>The product's identifier</description>
+                    <inventory_link>SERIALNO_B</inventory_link>
+                    <applications>
+                        <application>
+                            <name>General</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Flash Size</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.2925.4.1.5.0</snmp_oid>
+                    <key>cyACSFlashSize</key>
+                    <delay>1h</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <units>MB</units>
+                    <description>Total amount of flash memory in Mbytes</description>
+                    <applications>
+                        <application>
+                            <name>System</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>PSU 1 State</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.2925.4.1.3.2.0</snmp_oid>
+                    <key>cyACSPw1</key>
+                    <delay>1h</delay>
+                    <history>7d</history>
+                    <description>State of the first power supply</description>
+                    <applications>
+                        <application>
+                            <name>System</name>
+                        </application>
+                    </applications>
+                    <valuemap>
+                        <name>cyACSPower</name>
+                    </valuemap>
+                    <triggers>
+                        <trigger>
+                            <expression>{last(#1)}=2</expression>
+                            <name>PSU1 Offline</name>
+                            <priority>WARNING</priority>
+                            <description>Power Supply 1 is off</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>PSU 2 State</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.2925.4.1.3.3.0</snmp_oid>
+                    <key>cyACSPw2</key>
+                    <delay>1h</delay>
+                    <history>7d</history>
+                    <description>State of the second power supply</description>
+                    <applications>
+                        <application>
+                            <name>System</name>
+                        </application>
+                    </applications>
+                    <valuemap>
+                        <name>cyACSPower</name>
+                    </valuemap>
+                    <triggers>
+                        <trigger>
+                            <expression>{last(#1)}=2</expression>
+                            <name>PSU2 Offline</name>
+                            <priority>WARNING</priority>
+                            <description>Power Supply 2 is off</description>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Number of installed power Supplies</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.2925.4.1.3.1.0</snmp_oid>
+                    <key>cyACSPwNum</key>
+                    <delay>1h</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <description>It gives information about Power Supply</description>
+                    <applications>
+                        <application>
+                            <name>System</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>RAM Size</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.2925.4.1.6.0</snmp_oid>
+                    <key>cyACSRAMSize</key>
+                    <delay>1h</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <units>MB</units>
+                    <description>Total amount of RAM in Mbytes</description>
+                    <applications>
+                        <application>
+                            <name>System</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Firmware Version</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.2925.4.1.2.0</snmp_oid>
+                    <key>cyACSversion</key>
+                    <delay>1h</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>The firmware's version</description>
+                    <applications>
+                        <application>
+                            <name>General</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Host Name</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.2925.4.2.1.0</snmp_oid>
+                    <key>cyHostName</key>
+                    <delay>1h</delay>
+                    <history>1d</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <description>The Host Name</description>
+                    <inventory_link>ALIAS</inventory_link>
+                    <applications>
+                        <application>
+                            <name>General</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+        </template>
+        <template>
+            <template>Cyclades ACS INFO SNMPv2</template>
+            <name>Cyclades ACS INFO SNMPv2</name>
+            <description>CYCLADES-ACS-INFO-MIB</description>
+            <groups>
+                <group>
+                    <name>Avocent</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Serial Ports</name>
+                </application>
+            </applications>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>Serial Port Discovery</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#PORTNUM},1.3.6.1.4.1.2925.4.3.1.1.1,{#PORTTTY},1.3.6.1.4.1.2925.4.3.1.1.2,{#PORTNAME},1.3.6.1.4.1.2925.4.3.1.1.3]</snmp_oid>
+                    <key>discovery.cyIS</key>
+                    <delay>1h</delay>
+                    <lifetime>7d</lifetime>
+                    <description>Serial Port Discovery</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Port:{#PORTNUM} {#PORTNAME} - Breaks Errors</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.3.1.1.9.{#SNMPINDEX}</snmp_oid>
+                            <key>cyISPortErrBreaks[{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>7d</history>
+                            <description>The number of breaks error&#13;
+&#13;
+Port: {#PORTNUM}&#13;
+TTY: {#PORTTTY}&#13;
+Name: {#PORTNAME}</description>
+                            <applications>
+                                <application>
+                                    <name>Serial Ports</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Port:{#PORTNUM} {#PORTNAME} - Frame Errors</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.3.1.1.7.{#SNMPINDEX}</snmp_oid>
+                            <key>cyISPortErrFrame[{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>7d</history>
+                            <description>The number of frame error&#13;
+&#13;
+Port: {#PORTNUM}&#13;
+TTY: {#PORTTTY}&#13;
+Name: {#PORTNAME}</description>
+                            <applications>
+                                <application>
+                                    <name>Serial Ports</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Port:{#PORTNUM} {#PORTNAME} - Overrun Errors</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.3.1.1.10.{#SNMPINDEX}</snmp_oid>
+                            <key>cyISPortErrOverrun[{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>7d</history>
+                            <description>The number of overrun error&#13;
+&#13;
+Port: {#PORTNUM}&#13;
+TTY: {#PORTTTY}&#13;
+Name: {#PORTNAME}</description>
+                            <applications>
+                                <application>
+                                    <name>Serial Ports</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Port:{#PORTNUM} {#PORTNAME} - Parity Errors</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.3.1.1.8.{#SNMPINDEX}</snmp_oid>
+                            <key>cyISPortErrParity[{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>7d</history>
+                            <description>The number of parity error&#13;
+&#13;
+Port: {#PORTNUM}&#13;
+TTY: {#PORTTTY}&#13;
+Name: {#PORTNAME}</description>
+                            <applications>
+                                <application>
+                                    <name>Serial Ports</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Port:{#PORTNUM} {#PORTNAME} - Recieve Bytes</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.3.1.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>cyISPortRXBytes[{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>7d</history>
+                            <units>bytes</units>
+                            <description>The number of received bytes by the serial port.&#13;
+&#13;
+Port: {#PORTNUM}&#13;
+TTY: {#PORTTTY}&#13;
+Name: {#PORTNAME}</description>
+                            <applications>
+                                <application>
+                                    <name>Serial Ports</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Port:{#PORTNUM} {#PORTNAME} - DCD Signal</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.3.1.1.12.{#SNMPINDEX}</snmp_oid>
+                            <key>cyISPortSigCD[{#SNMPINDEX}]</key>
+                            <delay>10m</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <description>The state of DCD signal&#13;
+&#13;
+Port: {#PORTNUM}&#13;
+TTY: {#PORTTTY}&#13;
+Name: {#PORTNAME}</description>
+                            <applications>
+                                <application>
+                                    <name>Serial Ports</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>cyisPortEntry</name>
+                            </valuemap>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Port:{#PORTNUM} {#PORTNAME} - CTS Signal</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.3.1.1.15.{#SNMPINDEX}</snmp_oid>
+                            <key>cyISPortSigCTS[{#SNMPINDEX}]</key>
+                            <delay>10m</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <description>The state of CTS signal&#13;
+&#13;
+Port: {#PORTNUM}&#13;
+TTY: {#PORTTTY}&#13;
+Name: {#PORTNAME}</description>
+                            <applications>
+                                <application>
+                                    <name>Serial Ports</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>cyisPortEntry</name>
+                            </valuemap>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Port:{#PORTNUM} {#PORTNAME} - DSR Signal</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.3.1.1.13.{#SNMPINDEX}</snmp_oid>
+                            <key>cyISPortSigDSR[{#SNMPINDEX}]</key>
+                            <delay>10m</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <description>The state of DSR signal&#13;
+&#13;
+Port: {#PORTNUM}&#13;
+TTY: {#PORTTTY}&#13;
+Name: {#PORTNAME}</description>
+                            <applications>
+                                <application>
+                                    <name>Serial Ports</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>cyisPortEntry</name>
+                            </valuemap>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Port:{#PORTNUM} {#PORTNAME} - DTR Signal</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.3.1.1.11.{#SNMPINDEX}</snmp_oid>
+                            <key>cyISPortSigDTR[{#SNMPINDEX}]</key>
+                            <delay>10m</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <description>The state of DTR signal&#13;
+&#13;
+Port: {#PORTNUM}&#13;
+TTY: {#PORTTTY}&#13;
+Name: {#PORTNAME}</description>
+                            <applications>
+                                <application>
+                                    <name>Serial Ports</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>cyisPortEntry</name>
+                            </valuemap>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Port:{#PORTNUM} {#PORTNAME} - RI Signal</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.3.1.1.16.{#SNMPINDEX}</snmp_oid>
+                            <key>cyISPortSigRI[{#SNMPINDEX}]</key>
+                            <delay>10m</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <description>The state of RI signal&#13;
+&#13;
+Port: {#PORTNUM}&#13;
+TTY: {#PORTTTY}&#13;
+Name: {#PORTNAME}</description>
+                            <applications>
+                                <application>
+                                    <name>Serial Ports</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>cyisPortEntry</name>
+                            </valuemap>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Port:{#PORTNUM} {#PORTNAME} - RTS Signal</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.3.1.1.14.{#SNMPINDEX}</snmp_oid>
+                            <key>cyISPortSigRTS[{#SNMPINDEX}]</key>
+                            <delay>10m</delay>
+                            <history>7d</history>
+                            <trends>0</trends>
+                            <description>The state of RTS signal&#13;
+&#13;
+Port: {#PORTNUM}&#13;
+TTY: {#PORTTTY}&#13;
+Name: {#PORTNAME}</description>
+                            <applications>
+                                <application>
+                                    <name>Serial Ports</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>cyisPortEntry</name>
+                            </valuemap>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Port:{#PORTNUM} {#PORTNAME} - Transmit Bytes</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.3.1.1.5.{#SNMPINDEX}</snmp_oid>
+                            <key>cyISPortTxBytes[{#SNMPINDEX}]</key>
+                            <delay>5m</delay>
+                            <history>7d</history>
+                            <units>bytes</units>
+                            <description>The number of transmited bytes by the serial port.&#13;
+&#13;
+Port: {#PORTNUM}&#13;
+TTY: {#PORTTTY}&#13;
+Name: {#PORTNAME}</description>
+                            <applications>
+                                <application>
+                                    <name>Serial Ports</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>CHANGE_PER_SECOND</type>
+                                    <params/>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+        </template>
+        <template>
+            <template>Cyclades ACS PM Unit SNMPv2</template>
+            <name>Cyclades ACS PM Unit SNMPv2</name>
+            <description>CYCLADES-ACS-PM-MIB</description>
+            <groups>
+                <group>
+                    <name>Avocent</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>PM - General</name>
+                </application>
+                <application>
+                    <name>PM - Power</name>
+                </application>
+            </applications>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>Cyclades ACS PMUnit Discovery</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>discovery[{#PORTNAME},.1.3.6.1.4.1.2925.4.5.3.1.11]</snmp_oid>
+                    <key>cyACSPM</key>
+                    <delay>1h</delay>
+                    <lifetime>7d</lifetime>
+                    <description>Discovery for cyclades PM&#13;
+CYCLADES-ACS-PM-MIB::cyPMUnitEntry.11</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>PM {#PORTNAME} Current</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.5.3.1.5.{#SNMPINDEX}</snmp_oid>
+                            <key>PMCurent[{#SNMPINDEX}]</key>
+                            <delay>10m</delay>
+                            <history>7d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>Amps</units>
+                            <description>Unit Version Number&#13;
+CYCLADES-ACS-PM-MIB::cyPMUnitCurrent</description>
+                            <applications>
+                                <application>
+                                    <name>PM - Power</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <params>0.1</params>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>PM {#PORTNAME} Max Current</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.5.3.1.6.{#SNMPINDEX}</snmp_oid>
+                            <key>PMMAXCurent[{#SNMPINDEX}]</key>
+                            <delay>1h</delay>
+                            <history>7d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>Amps</units>
+                            <description>Unit Version Number&#13;
+CYCLADES-ACS-PM-MIB::cyPMUnitMaxCurrent</description>
+                            <applications>
+                                <application>
+                                    <name>PM - Power</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <params>0.1</params>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>PM {#PORTNAME} Power Factor</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.5.5.1.9.{#SNMPINDEX}</snmp_oid>
+                            <key>PMPF[{#SNMPINDEX}]</key>
+                            <delay>10m</delay>
+                            <history>7d</history>
+                            <value_type>FLOAT</value_type>
+                            <description>Unit Version Number&#13;
+CYCLADES-ACS-PM-MIB::cyPM.5.1.9</description>
+                            <applications>
+                                <application>
+                                    <name>PM - Power</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <params>0.01</params>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>PM {#PORTNAME} Temperature</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.5.9.1.8.{#SNMPINDEX}.1</snmp_oid>
+                            <key>PMTemp[{#SNMPINDEX}]</key>
+                            <delay>10m</delay>
+                            <history>7d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>C</units>
+                            <description>Unit Version Number&#13;
+CYCLADES-ACS-PM-MIB::cyPM.9.1.8.X.1</description>
+                            <applications>
+                                <application>
+                                    <name>PM - General</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <params>0.1</params>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>PM {#PORTNAME} Version</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.5.3.1.2.{#SNMPINDEX}</snmp_oid>
+                            <key>PMVersion[{#SNMPINDEX}]</key>
+                            <delay>1h</delay>
+                            <history>1d</history>
+                            <trends>0</trends>
+                            <value_type>CHAR</value_type>
+                            <description>Unit Version Number&#13;
+CYCLADES-ACS-PM-MIB::cyPMUnitVersion</description>
+                            <applications>
+                                <application>
+                                    <name>PM - General</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>PM {#PORTNAME} Watts</name>
+                            <type>SNMP_AGENT</type>
+                            <snmp_oid>.1.3.6.1.4.1.2925.4.5.3.1.15.{#SNMPINDEX}</snmp_oid>
+                            <key>PMWatts[{#SNMPINDEX}]</key>
+                            <delay>10m</delay>
+                            <history>7d</history>
+                            <units>Watts</units>
+                            <description>Unit Version Number&#13;
+CYCLADES-ACS-PM-MIB::cyPMUnitEntry.15</description>
+                            <applications>
+                                <application>
+                                    <name>PM - Power</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <params>0.1</params>
+                                </step>
+                            </preprocessing>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+        </template>
+    </templates>
+    <value_maps>
+        <value_map>
+            <name>cyACSPower</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>noinstalled</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>powerON</newvalue>
+                </mapping>
+                <mapping>
+                    <value>2</value>
+                    <newvalue>powerOFF</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+        <value_map>
+            <name>cyisPortEntry</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>down</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>up</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+    </value_maps>
+</zabbix_export>
